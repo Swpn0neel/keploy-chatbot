@@ -5,13 +5,12 @@ export default async function handler(req, res) {
     const apiRes = await fetch("https://keploy-api.abhishekkushwaha.me/chat", {
       method: "POST",
       headers: {
-        Accept: "application/json", // Correct accept header
-        "Content-Type": "application/json", // Correct content-type header
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question: userMessage }), // Send userMessage as "question" field
+      body: JSON.stringify({ question: userMessage }),
     });
 
-    // Handle non-200 responses
     if (!apiRes.ok) {
       const errorData = await apiRes.json();
       return res
@@ -19,7 +18,6 @@ export default async function handler(req, res) {
         .json({ error: "Error from Keploy API", details: errorData });
     }
 
-    // Parse the JSON response
     const data = await apiRes.json();
     res.status(200).json({ response: data });
   } catch (error) {
