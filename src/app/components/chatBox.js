@@ -18,7 +18,7 @@ export default function ChatBox() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userMessage: input }), // Send user input
+        body: JSON.stringify({ userMessage: input }), // Send user input as the question
       });
 
       if (!res.ok) {
