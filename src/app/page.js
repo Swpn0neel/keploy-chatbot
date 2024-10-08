@@ -2,6 +2,67 @@
 
 import React, { useState, useCallback } from "react";
 
+function textFormat(text) {
+  let block = 0;
+  let code = ``;
+  let lang = "";
+  let heading = 2;
+  let output = ``;
+
+  for (let i = 0; i < text.length; i++) {
+    if (text.substring(i, i + 3) === "```") {
+      i += 2;
+      if (block === 0) {
+        block = 1;
+        lang = "";
+        while (i < text.length && text.charAt(i) !== "\n") {
+          lang += text.charAt(i++);
+        }
+      } else {
+        output += code;
+        code = ``;
+        lang = "";
+        block = 0;
+      }
+    } else if (block === 0) {
+      if (text.substring(i, i + 3) === "###") {
+        i += 2;
+        heading = 3;
+        output += `\n\n`;
+      } else if (text.substring(i, i + 2) === "##") {
+        i += 1;
+        heading = 2;
+        output += `\n\n`;
+      } else if (text.substring(i, i + 1) == "#") {
+        heading = 1;
+        output += `\n\n`;
+      } else if (text.substring(i, i + 1) == "<") {
+        i++;
+        while (
+          i < text.length &&
+          text.substring(i, i + 2) != "/>" &&
+          text.substring(i, i + 1) != ">"
+        ) {
+          i++;
+        }
+      } else if (text.substring(i, i + 2) === "**") {
+        i += 1;
+      } else if (text.substring(i, i + 2) === "* ") {
+        i += 1;
+        output += `\n• `;
+      } else if (text.charAt(i) === "\n") {
+        output += `\n`;
+      } else {
+        output += text.charAt(i);
+      }
+    } else {
+      code += text.charAt(i);
+    }
+  }
+
+  return output;
+}
+
 export default function Home() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -78,7 +139,7 @@ export default function Home() {
                   : "bg-gray-300 text-black"
               }`}
             >
-              {msg.text}
+              {textFormat(msg.text)}
             </span>
           </div>
         ))}
